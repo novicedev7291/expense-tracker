@@ -1,0 +1,63 @@
+/* Main Layout */
+a[highlight] {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.header {
+    padding: 0 var(--lumo-space-m);
+}
+
+.header h1.logo {
+    font-size: 1em;
+    margin: var(--lumo-space-m);
+}
+
+.list-view .content {
+    display: flex;
+}
+
+.list-view .expense-grid {
+    flex: 2;
+}
+
+.list-view .expense-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}
+
+@media all and (max-width: 1100px) {
+    .list-view.editing .toolbar,
+    .list-view.editing .expense-grid {
+        display: none;
+    }
+}
+
+.income-list-view .content {
+    display: flex;
+}
+
+.income-list-view .income-grid {
+    flex: 2;
+}
+
+.income-list-view .transaction-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}
+
+@media all and (max-width: 1100px) {
+    .income-list-view.editing .toolbar,
+    .income-list-view.editing .income-grid {
+        display: none;
+    }
+}
+
+.dashboard-view .summary-stats {
+    font-size: 2em;
+    margin: 1em;
+}
+
+.month-picker-view .month-picker-label {
+    font-weight: bold;
+}

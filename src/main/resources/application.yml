@@ -1,0 +1,40 @@
+spring:
+  profiles.active: ${SPRING_PROFILES_ACTIVE:dev}
+logging:
+  level:
+    org:
+      springframework:
+        web: debug
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:h2:file:./expense-tracker
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true
+      database-platform: org.hibernate.dialect.H2Dialect
+      show-sql: true
+  flyway:
+    locations:
+      - 'classpath:db/migration'
+
+---
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:h2:mem:expense-tracker-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'classpath:h2/db/migration/test/init_tests.sql';
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true
+      database-platform: org.hibernate.dialect.H2Dialect
+      show-sql: true
+  flyway:
+    locations:
+      - 'classpath:h2/db/migration/test'
