@@ -17,7 +17,7 @@ export class AppDate {
     LocaleUtils.formatDate(this.value, format);
 }
 
-interface MonthYearObj {
+export interface MonthYearObj {
   expenses?: Map<BigInt, Expense>;
   savings?: Map<BigInt, Saving>;
   incomes?: Map<BigInt, Income>;

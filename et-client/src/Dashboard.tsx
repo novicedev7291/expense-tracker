@@ -25,8 +25,10 @@ const extract = (
   state: AppState,
   forMonthYear: Date
 ): { expenses: Expense[]; loading: boolean; error?: string } => {
+  console.log(state);
+  const monthYearKey = new AppDate(forMonthYear).toMonthYearStr();
   const sheet = state.monthYear
-    ? state.monthYear!.get(new AppDate(forMonthYear).toMonthYearStr())
+    ? state.monthYear!.get(monthYearKey)
     : state.monthYear;
   const { loading, error } = state;
 

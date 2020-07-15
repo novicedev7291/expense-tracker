@@ -1,6 +1,6 @@
 import { Expense, Income, Saving } from "../Types";
 
-import { AppState, AppDate } from "./";
+import { AppState, AppDate, MonthYearObj } from "./";
 
 export const ADD_EXPENSES = "ADD_EXPENSES";
 export const ADD_INCOMES = "ADD_INCOMES";
@@ -23,50 +23,60 @@ type ReducerAction = {
   error?: string;
 };
 
-type Entity = Expense | Income | Saving;
-
-const toMap = (data: Entity[]): Map<BigInt, Entity> => {
-  return data.reduce((map: Map<BigInt, Entity>, value: Entity) => {
+const toMap = <T extends { id: BigInt }>(data: T[]): Map<BigInt, T> => {
+  return data.reduce((map: Map<BigInt, T>, value: T) => {
     map.set(value.id, value);
     return map;
-  }, new Map<BigInt, Entity>());
+  }, new Map<BigInt, T>());
 };
 
 const addExpenses = (state: AppState, payload: Payload<Expense>): AppState => {
   const monthYearVal = payload.monthYear!.toMonthYearStr();
+  const existingMonthYearMap =
+    state.monthYear || new Map<string, MonthYearObj>();
+
+  const monthYearObj = existingMonthYearMap.get(monthYearVal) || {};
+  monthYearObj.expenses = toMap(payload.data!);
+
+  existingMonthYearMap.set(monthYearVal, monthYearObj);
+
   return {
     ...state,
-    [monthYearVal]: {
-      expenses: toMap(payload.data!),
-      ...["incomes"],
-      ...["savings"],
-    },
+    monthYear: existingMonthYearMap,
     loading: false,
   };
 };
 
 const addIncomes = (state: AppState, payload: Payload<Income>): AppState => {
   const monthYearVal = payload.monthYear!.toMonthYearStr();
+
+  const monthYearMap = state.monthYear || new Map<string, MonthYearObj>();
+
+  const monthYearObj = monthYearMap.get(monthYearVal) || {};
+  monthYearObj.incomes = toMap(payload.data!);
+
+  monthYearMap.set(monthYearVal, monthYearObj);
+
   return {
     ...state,
-    [monthYearVal]: {
-      incomes: toMap(payload.data!),
-      ...["expenses"],
-      ...["savings"],
-    },
+    monthYear: monthYearMap,
     loading: false,
   };
 };
 
 const addSavings = (state: AppState, payload: Payload<Saving>): AppState => {
   const monthYearVal = payload.monthYear!.toMonthYearStr();
+
+  const monthYearMap = state.monthYear || new Map<string, MonthYearObj>();
+
+  const monthYearObj = monthYearMap.get(monthYearVal) || {};
+  monthYearObj.savings = toMap(payload.data!);
+
+  monthYearMap.set(monthYearVal, monthYearObj);
+
   return {
     ...state,
-    [monthYearVal]: {
-      savings: toMap(payload.data!),
-      ...["expenses"],
-      ...["incomes"],
-    },
+    monthYear: monthYearMap,
     loading: false,
   };
 };
