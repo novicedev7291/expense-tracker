@@ -1,0 +1,54 @@
+{
+  "expenses": [
+    {
+      "id": 6,
+      "category": "Rent",
+      "description": "Description",
+      "amount": 21000,
+      "addedOn": "2020-07-01"
+    },
+    {
+      "id": 5,
+      "category": "Groceries",
+      "description": "Groceries for the week",
+      "amount": 1000,
+      "addedOn": "2020-07-02"
+    },
+    {
+      "id": 4,
+      "category": "Intenet",
+      "description": "Interne bill for this previous month",
+      "amount": 799,
+      "addedOn": "2020-07-04"
+    },
+    {
+      "id": 3,
+      "category": "EMI",
+      "description": "Car emi for this month",
+      "amount": 11788,
+      "addedOn": "2020-07-11"
+    }
+  ],
+  "incomes": [
+    {
+      "id": 1,
+      "source": "Salary",
+      "amount": 60000,
+      "addedOn": "2020-07-04"
+    }
+  ],
+  "savings": [
+    {
+      "id": 1,
+      "source": "PPF",
+      "amount": 10000,
+      "addedOn": "2020-07-11"
+    },
+    {
+      "id": 2,
+      "source": "Mutual Funds",
+      "amount": 8000,
+      "addedOn": "2020-07-14"
+    }
+  ]
+}
