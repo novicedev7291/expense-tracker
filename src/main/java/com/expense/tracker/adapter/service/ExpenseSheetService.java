@@ -1,6 +1,5 @@
 package com.expense.tracker.adapter.service;
 
-import com.expense.tracker.adapter.DecimalUtil;
 import com.expense.tracker.adapter.LocalDateUtil;
 import com.expense.tracker.adapter.web.ExpenseCsvContent;
 import com.expense.tracker.adapter.web.NewExpenseCommand;
@@ -39,8 +38,8 @@ public class ExpenseSheetService {
         return sheet.addExpense(
                 command.getCategory(),
                 command.getDescription(),
-                DecimalUtil.decimalToCents(command.getAmount()),
-                LocalDateUtil.dateFromUIFormat(command.getAddedOn())
+                command.amountInCents(),
+                command.dateFromUIString()
         );
     }
 
@@ -50,9 +49,9 @@ public class ExpenseSheetService {
         return sheet.addTransaction(
                 command.getSource(),
                 TxnType.INCOME,
-                DecimalUtil.decimalToCents(command.getAmount()),
-                LocalDateUtil.dateFromUIFormat(command.getAddedOn())
-                );
+                command.amountInCents(),
+                command.dateFromUIString()
+        );
     }
 
     public Transaction addSavingInSheet(final NewSavingCommand command) {
@@ -61,8 +60,8 @@ public class ExpenseSheetService {
         return sheet.addTransaction(
                 command.getSource(),
                 TxnType.SAVING,
-                DecimalUtil.decimalToCents(command.getAmount()),
-                LocalDateUtil.dateFromUIFormat(command.getAddedOn())
+                command.amountInCents(),
+                command.dateFromUIString()
         );
     }
 

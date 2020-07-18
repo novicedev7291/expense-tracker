@@ -2,6 +2,8 @@ package com.expense.tracker.adapter.web;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author <a href="kuldeepyadav7291@gmail.com">Kuldeep</a>
  */
@@ -10,6 +12,6 @@ public class ExpenseDto {
     private Long id;
     private String category;
     private String description;
-    private String amount;
+    private BigDecimal amount;
     private String addedOn;
 }

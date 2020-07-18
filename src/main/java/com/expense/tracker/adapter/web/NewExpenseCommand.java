@@ -1,9 +1,11 @@
 package com.expense.tracker.adapter.web;
 
 import com.expense.tracker.adapter.DecimalUtil;
+import com.expense.tracker.adapter.LocalDateUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @author <a href="kuldeepyadav7291@gmail.com">Kuldeep</a>
@@ -28,5 +30,9 @@ public class NewExpenseCommand {
 
     public int amountInCents() {
         return DecimalUtil.decimalToCents(amount);
+    }
+
+    public LocalDateTime dateFromUIString() {
+        return LocalDateUtil.dateFromUIFormat(getAddedOn());
     }
 }

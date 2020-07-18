@@ -52,7 +52,7 @@ public class Expense {
         return amountInCents;
     }
 
-    public BigDecimal centsToDecimal() {
+    public BigDecimal amountInDecimal() {
         return DecimalUtil.centsToDecimal(amountInCents);
     }
 

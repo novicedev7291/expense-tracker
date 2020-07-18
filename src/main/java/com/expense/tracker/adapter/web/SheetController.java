@@ -61,7 +61,7 @@ public class SheetController {
     private TransactionDto createTxnDtoFrom(Transaction txn) {
         return new TransactionDto(
                 txn.getId(), txn.getSource(),
-                DecimalUtil.inRupeesFormat(txn.amount()),
+                txn.amountInDecimals(),
                 LocalDateUtil.dateToUIFormat(txn.getAddedOn())
         );
     }
@@ -81,7 +81,7 @@ public class SheetController {
         expenseDto.setDescription(expense.getDescription());
         expenseDto.setId(expense.getId());
         expenseDto.setAddedOn(LocalDateUtil.dateToUIFormat(expense.getAddedOn()));
-        expenseDto.setAmount(DecimalUtil.inRupeesFormat(expense.amount()));
+        expenseDto.setAmount(expense.amountInDecimal());
         return expenseDto;
     }
 

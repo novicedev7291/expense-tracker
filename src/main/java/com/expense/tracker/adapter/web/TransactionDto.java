@@ -12,6 +12,6 @@ import java.math.BigDecimal;
 public class TransactionDto {
     private Integer id;
     private String source;
-    private String amount;
+    private BigDecimal amount;
     private String addedOn;
 }

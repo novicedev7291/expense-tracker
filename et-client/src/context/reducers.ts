@@ -34,6 +34,7 @@ const addExpenses = (state: AppState, payload: Payload<Expense>): AppState => {
     ...state,
     monthYear: existingMonthYearMap,
     loading: false,
+    error: undefined,
   };
 };
 
@@ -51,6 +52,7 @@ const addIncomes = (state: AppState, payload: Payload<Income>): AppState => {
     ...state,
     monthYear: monthYearMap,
     loading: false,
+    error: undefined,
   };
 };
 
@@ -68,32 +70,28 @@ const addSavings = (state: AppState, payload: Payload<Saving>): AppState => {
     ...state,
     monthYear: monthYearMap,
     loading: false,
+    error: undefined,
   };
 };
 
 const addExpense = (state: AppState, payload: Payload<Expense>): AppState => {
   const expense = payload.data! as Expense;
-
+  console.log(state);
   if (expense) {
     const monthYearVal = new AppDate(expense.addedOn).toMonthYearStr();
     const monthYearMap = state.monthYear || new Map<string, MonthYearObj>();
     const monthYearObj = monthYearMap.get(monthYearVal) || {};
 
-    const expenses = monthYearObj.expenses || new Map<number, Expense>();
+    let expenses = monthYearObj.expenses || new Map<number, Expense>();
     expenses.set(expense.id, expense);
 
+    monthYearObj.expenses = expenses;
+    monthYearMap.set(monthYearVal, monthYearObj);
     return {
       ...state,
-      monthYear: {
-        ...monthYearMap,
-        [monthYearVal]: {
-          ...monthYearObj,
-          expenses: {
-            ...expenses,
-          },
-        },
-      },
+      monthYear: monthYearMap,
       loading: false,
+      error: undefined,
     };
   }
 

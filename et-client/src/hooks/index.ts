@@ -143,19 +143,11 @@ export const useUIDispatch = () => {
       dispatch!({ type: API_CALL, payload: new Payload() });
       etService
         .addNewExpense(expense)
-        .then((response) => {
-          if (response.status === 200) {
-            dispatch!({
-              type: ADD_EXPENSE,
-              payload: new Payload<Expense>(undefined, expense),
-            });
-          } else {
-            dispatch!({
-              type: ERROR,
-              payload: new Payload(undefined, undefined),
-              error: "Could not save, try after sometime",
-            });
-          }
+        .then((expense) => {
+          dispatch!({
+            type: ADD_EXPENSE,
+            payload: new Payload<Expense>(undefined, expense),
+          });
         })
         .catch((err) => {
           dispatch!({
