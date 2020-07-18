@@ -7,17 +7,17 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-import GlobalStateProvider from "./context/GlobalState";
+import ContextProvider from "./context/GlobalState";
 
 import { BrowserRouter, Route } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStateProvider>
+    <ContextProvider>
       <BrowserRouter>
         <Route path="/" component={App} />
       </BrowserRouter>
-    </GlobalStateProvider>
+    </ContextProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

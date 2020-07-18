@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -8,25 +8,33 @@ import Table from "react-bootstrap/Table";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import LocaleUtils from "react-day-picker/moment";
-
-import TopHeading from "./components/TopHeading";
-import AppDatePicker from "./components/AppDatePicker";
-import { Income as IncomeModel } from "./Types";
-import { useFetch } from "./hooks";
 import { IncomeRow } from "./components/TableRow";
 import { MONTH_YEAR_FORMAT } from "./constant";
 
+import TopHeading from "./components/TopHeading";
+import AppDatePicker from "./components/AppDatePicker";
 import { Link, RouteComponentProps } from "react-router-dom";
+
+import { AppDate } from "./context";
+import { useLocalState, useUIDispatch } from "./hooks";
 
 interface Props extends RouteComponentProps<{ url: string }> {}
 
 export const Income: React.FC<Props> = ({ match }) => {
   const { url } = match;
-  const [monthYear, setMonthYear] = useState<Date>(new Date());
-  const { data: incomes, loading } = useFetch<IncomeModel[]>(
-    `/incomes?monthYear=${LocaleUtils.formatDate(monthYear, MONTH_YEAR_FORMAT)}`
-  );
+
+  const {
+    incomes,
+    loading,
+    error,
+    currentMonthYear: monthYear,
+  } = useLocalState();
+  const { fetchIncomes, changeMonthYear } = useUIDispatch();
+
+  useEffect(() => {
+    fetchIncomes(monthYear);
+  }, [fetchIncomes, monthYear]);
+
   return (
     <React.Fragment>
       <TopHeading
@@ -41,8 +49,10 @@ export const Income: React.FC<Props> = ({ match }) => {
             <Col sm="4">
               <AppDatePicker
                 dateFormat={MONTH_YEAR_FORMAT}
-                $value={monthYear}
-                handleDayChange={(value: Date) => setMonthYear(value)}
+                $value={monthYear.value}
+                handleDayChange={(value: Date) =>
+                  changeMonthYear(new AppDate(value))
+                }
               />
             </Col>
             <Col sm="4">
@@ -60,6 +70,8 @@ export const Income: React.FC<Props> = ({ match }) => {
             <Col md="8">
               {loading ? (
                 <div>loading...</div>
+              ) : error ? (
+                <div>{error}</div>
               ) : (
                 <Card>
                   <Card.Header>

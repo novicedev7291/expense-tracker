@@ -18,31 +18,46 @@ export class AppDate {
 }
 
 export interface MonthYearObj {
-  expenses?: Map<BigInt, Expense>;
-  savings?: Map<BigInt, Saving>;
-  incomes?: Map<BigInt, Income>;
+  expenses?: Map<number, Expense>;
+  savings?: Map<number, Saving>;
+  incomes?: Map<number, Income>;
   totalIncome?: number;
   totalSaving?: number;
   totalExpense?: number;
 }
 
 export interface AppState {
+  currentMonthYear: AppDate;
   monthYear?: Map<string, MonthYearObj>;
   loading: boolean;
   error?: string;
 }
 
-export interface ContextValues {
-  state: AppState;
-  fetchExpenses?: (monthYear: AppDate) => void;
-  fetchIncomes?: (monthYear: AppDate) => void;
-  fetchSavings?: (monthYear: AppDate) => void;
+export class Payload<T> {
+  monthYear?: AppDate;
+  data?: T[] | T;
+
+  constructor(monthYear?: AppDate, data?: T[] | T) {
+    this.monthYear = monthYear;
+    this.data = data;
+  }
 }
 
-export const initialState = {
-  loading: false,
+export type ReducerAction = {
+  type: string;
+  payload: Payload<any>;
+  error?: string;
 };
 
-const AppContext = createContext<ContextValues>({ state: initialState });
+export const initialState = {
+  currentMonthYear: new AppDate(new Date()),
+  loading: false,
+  error: undefined,
+};
 
-export default AppContext;
+const AppStateContext = createContext<AppState>(initialState);
+const AppDispatchContext = createContext<
+  React.Dispatch<ReducerAction> | undefined
+>(undefined);
+
+export { AppStateContext, AppDispatchContext };

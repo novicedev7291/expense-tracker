@@ -15,11 +15,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TopHeading from "./components/TopHeading";
 import AppDatePicker from "./components/AppDatePicker";
 import InputGroup from "react-bootstrap/InputGroup";
+import { useLocalState } from "./hooks";
 
 interface Props extends RouteComponentProps<{ id: string }> {}
 
 export const SavingDetail: React.FC<Props> = ({ match }: Props) => {
-  console.log(match);
+  const { selectSaving } = useLocalState();
   if (match) {
     const { id } = match.params;
     if (id === "new") {
@@ -81,6 +82,7 @@ export const SavingDetail: React.FC<Props> = ({ match }: Props) => {
         </React.Fragment>
       );
     } else {
+      const saving = selectSaving(Number.parseInt(id));
       return (
         <React.Fragment>
           <TopHeading
@@ -111,7 +113,8 @@ export const SavingDetail: React.FC<Props> = ({ match }: Props) => {
                           <Form.Control
                             placeholder="Source"
                             type="text"
-                            value="Salary"
+                            value={saving && saving.source}
+                            readOnly
                           />
                         </Form.Group>
                         <Form.Group>
@@ -124,12 +127,16 @@ export const SavingDetail: React.FC<Props> = ({ match }: Props) => {
                             <Form.Control
                               placeholder="Amount"
                               type="number"
-                              value="60000"
+                              value={saving && saving.amount}
+                              readOnly
                             />
                           </InputGroup>
                         </Form.Group>
                         <Form.Group>
-                          <AppDatePicker dateFormat="MMMM DD, YYYY" />
+                          <AppDatePicker
+                            dateFormat="MMMM DD, YYYY"
+                            $value={saving && saving.addedOn}
+                          />
                         </Form.Group>
                       </Form>
                     </Card.Body>

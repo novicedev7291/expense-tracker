@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -13,45 +13,27 @@ import TopHeading from "./components/TopHeading";
 
 import { Link } from "react-router-dom";
 
-import { Expense } from "./Types";
 import { ExpenseRow } from "./components/TableRow";
 import { MONTH_YEAR_FORMAT } from "./constant";
 
-import AppContext, { ContextValues, AppState, AppDate } from "./context";
+import { useLocalState, useUIDispatch } from "./hooks";
+import { AppDate } from "./context";
 
 interface Props {}
 
-const extract = (
-  state: AppState,
-  forMonthYear: Date
-): { expenses: Expense[]; loading: boolean; error?: string } => {
-  console.log(state);
-  const monthYearKey = new AppDate(forMonthYear).toMonthYearStr();
-  const sheet = state.monthYear
-    ? state.monthYear!.get(monthYearKey)
-    : state.monthYear;
-  const { loading, error } = state;
-
-  if (sheet) {
-    let expenses: Expense[] = [];
-    sheet.expenses!.forEach((value, key) => expenses.push(value));
-    return { expenses, loading, error };
-  }
-  return { expenses: [], loading, error };
-};
-
 export const Dashboard: React.FC<Props> = () => {
-  const [monthYear, setMonthYear] = useState<Date>(new Date());
+  const {
+    expenses,
+    loading,
+    error,
+    currentMonthYear: monthYear,
+  } = useLocalState();
 
-  const { state, fetchExpenses } = useContext<ContextValues>(AppContext);
-
-  const { expenses, loading } = extract(state, monthYear);
+  const { fetchExpenses, changeMonthYear } = useUIDispatch();
 
   useEffect(() => {
-    if (fetchExpenses) {
-      fetchExpenses(new AppDate(monthYear));
-    }
-  }, [monthYear]);
+    fetchExpenses(monthYear);
+  }, [monthYear, fetchExpenses]);
 
   return (
     <React.Fragment>
@@ -63,8 +45,11 @@ export const Dashboard: React.FC<Props> = () => {
             <Col sm="4" className="mb-3">
               <AppDatePicker
                 dateFormat={MONTH_YEAR_FORMAT}
-                $value={monthYear}
-                handleDayChange={(monthYear: Date) => setMonthYear(monthYear)}
+                $value={monthYear.value}
+                handleDayChange={(value: Date) => {
+                  console.log(value);
+                  changeMonthYear(new AppDate(value));
+                }}
               />
             </Col>
             <Col sm="4">
@@ -87,6 +72,8 @@ export const Dashboard: React.FC<Props> = () => {
             <Col md="8">
               {loading ? (
                 <div>loading...</div>
+              ) : error ? (
+                <div>{error}</div>
               ) : (
                 <Card>
                   <Card.Header>

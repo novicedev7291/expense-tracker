@@ -3,7 +3,7 @@ import { LocaleUtils } from "react-day-picker/types/LocaleUtils";
 import { APP_DATE_FORMAT } from "../constant";
 
 export class ExpenseModel implements Expense {
-  id: BigInt;
+  id: number;
   category: string;
   description: string;
   amount: number;

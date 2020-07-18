@@ -16,10 +16,12 @@ import TopHeading from "./components/TopHeading";
 import AppDatePicker from "./components/AppDatePicker";
 import InputGroup from "react-bootstrap/InputGroup";
 
+import { useLocalState } from "./hooks";
+
 interface Props extends RouteComponentProps<{ id: string }> {}
 
 export const IncomeDetail: React.FC<Props> = ({ match }: Props) => {
-  console.log(match);
+  const { selectIncome } = useLocalState();
   if (match) {
     const { id } = match.params;
     if (id === "new") {
@@ -81,6 +83,7 @@ export const IncomeDetail: React.FC<Props> = ({ match }: Props) => {
         </React.Fragment>
       );
     } else {
+      const income = selectIncome(Number.parseInt(id));
       return (
         <React.Fragment>
           <TopHeading
@@ -111,7 +114,8 @@ export const IncomeDetail: React.FC<Props> = ({ match }: Props) => {
                           <Form.Control
                             placeholder="Source"
                             type="text"
-                            value="Salary"
+                            value={income && income.source}
+                            readOnly
                           />
                         </Form.Group>
                         <Form.Group>
@@ -124,12 +128,16 @@ export const IncomeDetail: React.FC<Props> = ({ match }: Props) => {
                             <Form.Control
                               placeholder="Amount"
                               type="number"
-                              value="60000"
+                              value={income && income.amount}
+                              readOnly
                             />
                           </InputGroup>
                         </Form.Group>
                         <Form.Group>
-                          <AppDatePicker dateFormat="MMMM DD, YYYY" />
+                          <AppDatePicker
+                            dateFormat="MMMM DD, YYYY"
+                            $value={income && income.addedOn}
+                          />
                         </Form.Group>
                       </Form>
                     </Card.Body>

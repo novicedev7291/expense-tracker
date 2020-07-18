@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -11,25 +11,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TopHeading from "./components/TopHeading";
 import AppDatePicker from "./components/AppDatePicker";
 import { ExpenseRow } from "./components/TableRow";
-import { RouteUrl, Expense as ExpenseModel } from "./Types";
+import { RouteUrl } from "./Types";
 import { MONTH_YEAR_FORMAT } from "./constant";
 
 import { Link, RouteComponentProps } from "react-router-dom";
 
-import { useFetch } from "./hooks";
-import LocaleUtils from "react-day-picker/moment";
+import { useLocalState, useUIDispatch } from "./hooks";
+import { AppDate } from "./context";
 
 interface Props extends RouteComponentProps<RouteUrl> {}
 
 export const Expense: React.FC<Props> = ({ match }) => {
   const { url } = match;
-  const [monthYear, setMonthYear] = useState<Date>(new Date());
-  const { data: expenses, loading } = useFetch<ExpenseModel[]>(
-    `/expenses?monthYear=${LocaleUtils.formatDate(
-      monthYear,
-      MONTH_YEAR_FORMAT
-    )}`
-  );
+  const {
+    expenses,
+    loading,
+    error,
+    currentMonthYear: monthYear,
+  } = useLocalState();
+  const { fetchExpenses, changeMonthYear } = useUIDispatch();
+
+  useEffect(() => {
+    fetchExpenses(monthYear);
+  }, [monthYear, fetchExpenses]);
 
   return (
     <React.Fragment>
@@ -45,8 +49,10 @@ export const Expense: React.FC<Props> = ({ match }) => {
             <Col sm="4" className="mb-3">
               <AppDatePicker
                 dateFormat={MONTH_YEAR_FORMAT}
-                $value={monthYear}
-                handleDayChange={(value: Date) => setMonthYear(value)}
+                $value={monthYear.value}
+                handleDayChange={(value: Date) =>
+                  changeMonthYear(new AppDate(value))
+                }
               />
             </Col>
             <Col sm="4">
@@ -64,15 +70,12 @@ export const Expense: React.FC<Props> = ({ match }) => {
             <Col md="8">
               {loading ? (
                 <div>loading...</div>
+              ) : error ? (
+                <div>{error}</div>
               ) : (
                 <Card>
                   <Card.Header>
-                    <div className="d-flex">
-                      <div className="mr-auto">
-                        <h4>Latest Expenses</h4>
-                      </div>
-                      <div className="ml-auto"></div>
-                    </div>
+                    <h4>Expenses</h4>
                   </Card.Header>
                   <Table striped responsive>
                     <thead className="thead-dark">
@@ -89,7 +92,7 @@ export const Expense: React.FC<Props> = ({ match }) => {
                       {expenses &&
                         expenses?.map((e) => (
                           <ExpenseRow
-                            key={`${e.id}`}
+                            key={e.id.toString()}
                             detailLink={`${url}/${e.id}`}
                             expense={e}
                           />

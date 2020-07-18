@@ -3,42 +3,36 @@ export interface RouteUrl {
 }
 
 export interface Transaction {
-  id: BigInt;
+  id: number;
   amount: Number;
   addedOn: Date;
-}
-
-export interface ExpenseJson {
-  id: BigInt;
-  category: string;
-  description: string;
-  amount: Number;
-  addedOn: string;
 }
 
 export interface Expense {
-  id: BigInt;
+  id: number;
   category: string;
   description: string;
-  amount: Number;
+  amount: number;
   addedOn: Date;
 }
-export interface TransactionJson {
-  id: BigInt;
-  source: string;
-  amount: Number;
+
+export interface NewExpense {
+  category: string;
+  description: string;
+  amount: number;
   addedOn: Date;
 }
+
 export interface Income {
-  id: BigInt;
+  id: number;
   source: string;
-  amount: Number;
+  amount: number;
   addedOn: Date;
 }
 
 export interface Saving {
-  id: BigInt;
+  id: number;
   source: string;
-  amount: Number;
+  amount: number;
   addedOn: Date;
 }

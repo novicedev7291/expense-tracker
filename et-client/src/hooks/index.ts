@@ -1,89 +1,178 @@
-import { useState, useEffect } from "react";
+import React, { useContext } from "react";
 
 import { Income, Saving, Expense } from "../Types";
-import sheet from "../sheet.json";
+import {
+  selectExpenses,
+  selectIncomes,
+  selectSavings,
+  selectExpense,
+  selectIncome,
+  selectSaving,
+} from "../context/selectors";
+import {
+  AppDispatchContext,
+  AppDate,
+  Payload,
+  AppStateContext,
+} from "../context";
+import {
+  CHANGE_MONTH,
+  ADD_EXPENSES,
+  ADD_INCOMES,
+  ADD_SAVINGS,
+  ERROR,
+  ADD_EXPENSE,
+  API_CALL,
+} from "../context/reducers";
+import { ETApiService } from "../service/ETApiService";
 
-const decodeExpense = (json: any): Expense => {
-  return Object.assign({}, json);
-};
-
-const decodeIncome = (json: any): Income => Object.assign({}, json);
-const decodeSaving = (json: any): Saving => Object.assign({}, json);
-
-type S = keyof Expense | keyof Income | keyof Saving;
-
-const fetch = async (url: string): Promise<Array<S>> => {
-  if (url.indexOf("/expenses") === 0) {
-    const fetchExpenses = () =>
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(sheet.expenses.reverse().map(decodeExpense));
-        }, 1000);
-      });
-    const response = await fetchExpenses();
-    return new Promise((resolve) => {
-      resolve((response as any[]) as S[]);
-    });
-  }
-  if (url.indexOf("/incomes") === 0) {
-    const fetchIncomes = () =>
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(sheet.incomes.reverse().map(decodeIncome));
-        }, 1000);
-      });
-    const response = await fetchIncomes();
-    return new Promise((resolve) => {
-      resolve((response as any[]) as S[]);
-    });
-  }
-  if (url.indexOf("/savings") === 0) {
-    const fetchSavings = () =>
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(sheet.savings.reverse().map(decodeSaving));
-        }, 1000);
-      });
-    const response = await fetchSavings();
-    return new Promise((resolve) => {
-      resolve((response as any[]) as S[]);
-    });
-  }
-  return new Promise((resolve, reject) => reject("Could not fetch data"));
-};
-
-interface ApiReturnData<S> {
-  data?: S;
-  error?: string;
+export interface ContextStateValue {
+  currentMonthYear: AppDate;
+  expenses: Expense[];
+  incomes: Income[];
+  savings: Saving[];
   loading: boolean;
+  selectExpense: (id: number) => Expense | undefined;
+  selectSaving: (id: number) => Saving | undefined;
+  selectIncome: (id: number) => Income | undefined;
+  summary: { totalIncome: number; totalExpense: number; totalSaving: number };
+  error: string | undefined;
 }
 
-export const useFetch = <T>(
-  url: string,
-  forMonthYear?: Date
-): ApiReturnData<T> => {
-  const [data, setData] = useState<ApiReturnData<T>>({ loading: false });
+const etService = new ETApiService();
 
-  useEffect(() => {
-    setData({ loading: true });
+export const useLocalState = (): ContextStateValue => {
+  const state = useContext(AppStateContext);
 
-    if (url) {
-      try {
-        const getData = async () => {
-          const data = await fetch(url);
-          setData({
-            data: (data as any) as T,
-            error: undefined,
-            loading: false,
+  const getExpenseById = (id: number): Expense | undefined =>
+    selectExpense(state, id);
+  const getIncomeById = (id: number): Income | undefined =>
+    selectIncome(state, id);
+  const getSavignById = (id: number): Saving | undefined =>
+    selectSaving(state, id);
+
+  return {
+    currentMonthYear: state.currentMonthYear,
+    expenses: selectExpenses(state),
+    incomes: selectIncomes(state),
+    savings: selectSavings(state),
+    selectExpense: getExpenseById,
+    selectIncome: getIncomeById,
+    selectSaving: getSavignById,
+    summary: { totalExpense: 0.0, totalIncome: 0.0, totalSaving: 0.0 },
+    loading: state.loading,
+    error: state.error,
+  };
+};
+
+export const useUIDispatch = () => {
+  const dispatch = useContext(AppDispatchContext);
+
+  const changeMonthYear = React.useCallback(
+    (value: AppDate) => {
+      dispatch!({ type: CHANGE_MONTH, payload: new Payload(value) });
+    },
+    [dispatch]
+  );
+
+  const fetchExpenses = React.useCallback(
+    (monthYear: AppDate) => {
+      etService
+        .getExpenses(monthYear.toMonthYearStr())
+        .then((value) =>
+          dispatch!({
+            type: ADD_EXPENSES,
+            payload: new Payload<Expense>(monthYear, value),
+          })
+        )
+        .catch((err) =>
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(),
+            error: err,
+          })
+        );
+    },
+    [dispatch]
+  );
+
+  const fetchIncomes = React.useCallback(
+    (monthYear: AppDate) => {
+      etService
+        .getIncomes(monthYear.toMonthYearStr())
+        .then((value) =>
+          dispatch!({
+            type: ADD_INCOMES,
+            payload: new Payload<Income>(monthYear, value),
+          })
+        )
+        .catch((err) =>
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(),
+            error: err,
+          })
+        );
+    },
+    [dispatch]
+  );
+
+  const fetchSavings = React.useCallback(
+    (monthYear: AppDate) => {
+      etService
+        .getSavings(monthYear.toMonthYearStr())
+        .then((value) =>
+          dispatch!({
+            type: ADD_SAVINGS,
+            payload: new Payload<Saving>(monthYear, value),
+          })
+        )
+        .catch((err) =>
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(),
+            error: err,
+          })
+        );
+    },
+    [dispatch]
+  );
+
+  const addNewExpense = React.useCallback(
+    (expense: Expense) => {
+      dispatch!({ type: API_CALL, payload: new Payload() });
+      etService
+        .addNewExpense(expense)
+        .then((response) => {
+          if (response.status === 200) {
+            dispatch!({
+              type: ADD_EXPENSE,
+              payload: new Payload<Expense>(undefined, expense),
+            });
+          } else {
+            dispatch!({
+              type: ERROR,
+              payload: new Payload(undefined, undefined),
+              error: "Could not save, try after sometime",
+            });
+          }
+        })
+        .catch((err) => {
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(undefined, undefined),
+            error: err,
           });
-        };
-        getData();
-      } catch (e) {
-        setData({ error: e, loading: false });
-        console.error(e);
-      }
-    }
-  }, [url]);
+        });
+    },
+    [dispatch]
+  );
 
-  return data;
+  return {
+    changeMonthYear,
+    fetchExpenses,
+    fetchSavings,
+    fetchIncomes,
+    addNewExpense,
+  };
 };
