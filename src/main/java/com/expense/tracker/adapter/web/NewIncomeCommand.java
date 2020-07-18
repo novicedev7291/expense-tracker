@@ -13,13 +13,13 @@ public class NewIncomeCommand {
     private String monthYear;
     private String source;
     private BigDecimal amount;
-    private String date;
+    private String addedOn;
 
-    public NewIncomeCommand(String monthYear, String source, BigDecimal amount, String date) {
+    public NewIncomeCommand(String monthYear, String source, BigDecimal amount, String addedOn) {
         this.monthYear = monthYear;
         this.source = source;
         this.amount = amount;
-        this.date = date;
+        this.addedOn = addedOn;
     }
 
     public int amountInCents() {

@@ -41,6 +41,8 @@ export class ETApiService {
       addedOn: addedOn.toFormat(API_DATE_FORMAT),
     });
 
+    console.log(bodyData);
+
     const response = await fetch("/expenses", {
       method: "POST",
       mode: "cors",

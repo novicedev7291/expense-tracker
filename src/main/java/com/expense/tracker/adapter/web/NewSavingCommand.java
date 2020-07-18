@@ -13,13 +13,13 @@ public class NewSavingCommand {
     private String monthYear;
     private String source;
     private BigDecimal amount;
-    private String date;
+    private String addedOn;
 
-    public NewSavingCommand(String monthYear, String source, BigDecimal amount, String date) {
+    public NewSavingCommand(String monthYear, String source, BigDecimal amount, String addedOn) {
         this.monthYear = monthYear;
         this.source = source;
         this.amount = amount;
-        this.date = date;
+        this.addedOn = addedOn;
     }
 
     public int amountInCents() {

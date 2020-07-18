@@ -14,14 +14,14 @@ public class NewExpenseCommand {
     private String category;
     private String description;
     private BigDecimal amount;
-    private String date;
+    private String addedOn;
 
     public static NewExpenseCommand of(String monthYear, String category, String description, BigDecimal amount, String date) {
         NewExpenseCommand command = new NewExpenseCommand();
         command.setAmount(amount);
         command.setCategory(category);
         command.setDescription(description);
-        command.setDate(date);
+        command.setAddedOn(date);
         command.setMonthYear(monthYear);
         return command;
     }

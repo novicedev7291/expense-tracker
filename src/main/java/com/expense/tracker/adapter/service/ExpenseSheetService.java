@@ -40,7 +40,7 @@ public class ExpenseSheetService {
                 command.getCategory(),
                 command.getDescription(),
                 DecimalUtil.decimalToCents(command.getAmount()),
-                LocalDateUtil.dateFromUIFormat(command.getDate())
+                LocalDateUtil.dateFromUIFormat(command.getAddedOn())
         );
     }
 
@@ -51,7 +51,7 @@ public class ExpenseSheetService {
                 command.getSource(),
                 TxnType.INCOME,
                 DecimalUtil.decimalToCents(command.getAmount()),
-                LocalDateUtil.dateFromUIFormat(command.getDate())
+                LocalDateUtil.dateFromUIFormat(command.getAddedOn())
                 );
     }
 
@@ -62,7 +62,7 @@ public class ExpenseSheetService {
                 command.getSource(),
                 TxnType.SAVING,
                 DecimalUtil.decimalToCents(command.getAmount()),
-                LocalDateUtil.dateFromUIFormat(command.getDate())
+                LocalDateUtil.dateFromUIFormat(command.getAddedOn())
         );
     }
 

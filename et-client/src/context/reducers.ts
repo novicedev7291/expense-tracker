@@ -122,7 +122,7 @@ const appReducer = (state: AppState, action: ReducerAction): AppState => {
     case ADD_EXPENSE:
       return addExpense(state, action.payload);
     case ERROR:
-      return { ...state, error: action.error };
+      return { ...state, error: action.error, loading: false };
     default:
       return state;
   }

@@ -18,12 +18,13 @@ import TopHeading from "./components/TopHeading";
 import AppDatePicker from "./components/AppDatePicker";
 import InputGroup from "react-bootstrap/InputGroup";
 import { useLocalState, useUIDispatch } from "./hooks";
-import { NewExpense } from "./Types";
+import { Expense } from "./Types";
 
 interface Props extends RouteComponentProps<{ id: string }> {}
 
 export const ExpenseDetail: React.FC<Props> = ({ match }: Props) => {
-  const [values, setValues] = React.useState<NewExpense>({
+  const [values, setValues] = React.useState<Expense>({
+    id: 0,
     category: "",
     description: "",
     amount: 0,
@@ -43,6 +44,7 @@ export const ExpenseDetail: React.FC<Props> = ({ match }: Props) => {
 
   const handleAddExpense = () => {
     console.log(values);
+    addNewExpense(values);
   };
 
   if (match) {
