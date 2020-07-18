@@ -36,9 +36,9 @@ public class SheetController {
             produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity addExpense(@RequestBody NewExpenseCommand command) {
-        service.addNewExpenseInSheet(command);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<ExpenseDto> addExpense(@RequestBody NewExpenseCommand command) {
+        Expense addedExpense = service.addNewExpenseInSheet(command);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createExpenseDtoFrom(addedExpense));
     }
 
     @GetMapping(value = "/expenses", produces = APPLICATION_JSON_VALUE)
@@ -89,18 +89,18 @@ public class SheetController {
             produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity addSaving(@RequestBody NewSavingCommand command) {
-        service.addSavingInSheet(command);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<TransactionDto> addSaving(@RequestBody NewSavingCommand command) {
+        Transaction incomeTxn = service.addSavingInSheet(command);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createTxnDtoFrom(incomeTxn));
     }
 
     @PostMapping(value = "/incomeSources",
             produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity addIncome(@RequestBody NewIncomeCommand command) {
-        service.addIncomeSourceInSheet(command);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<TransactionDto> addIncome(@RequestBody NewIncomeCommand command) {
+        Transaction savingTxn = service.addIncomeSourceInSheet(command);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createTxnDtoFrom(savingTxn));
     }
 
     @GetMapping(value = "/summary", produces = APPLICATION_JSON_VALUE)
@@ -122,8 +122,8 @@ public class SheetController {
     }
 
     @PostMapping(value = "/import")
-    public ResponseEntity importExpenses(@RequestBody ExpenseCsvContent content) {
+    public ResponseEntity<String> importExpenses(@RequestBody ExpenseCsvContent content) {
         service.importExpensesFromCsv(content);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body("success");
     }
 }

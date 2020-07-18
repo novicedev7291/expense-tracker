@@ -41,7 +41,7 @@ public class ExpenseSheet {
     }
 
     public void addTransaction(String source, TxnType type, int amount) {
-        if(type == TxnType.SAVING && !hasBalanceToAddSaving(amount)) {
+        if(type == TxnType.SAVING && hasBalanceToAddSaving(amount)) {
             throw new IllegalArgumentException("Not having enough balance to save this much for this month");
         }
         Transaction savedTransaction = txnRepository.save(Transaction.of(source, type, amount, LocalDateTime.now(clock)));
@@ -51,8 +51,8 @@ public class ExpenseSheet {
                 .build();
     }
 
-    public void addTransaction(String source, TxnType type, int amount, LocalDateTime addedOn) {
-        if(type == TxnType.SAVING && !hasBalanceToAddSaving(amount)) {
+    public Transaction addTransaction(String source, TxnType type, int amount, LocalDateTime addedOn) {
+        if(type == TxnType.SAVING && hasBalanceToAddSaving(amount)) {
             throw new IllegalArgumentException("Not having enough balance to save this much for this month");
         }
         if(canAddInSheetForThisMonth(addedOn)) {
@@ -61,14 +61,14 @@ public class ExpenseSheet {
                     .addAll(transactions)
                     .add(savedTransaction)
                     .build();
-            return;
+            return savedTransaction;
         }
         throw new IllegalArgumentException("Income is not for given month/year");
 
     }
 
     private boolean hasBalanceToAddSaving(int amount) {
-        return balance() >= amount;
+        return balance() < amount;
     }
 
     private int balance() {
@@ -81,14 +81,14 @@ public class ExpenseSheet {
                 .sum();
     }
 
-    public void addExpense(String category, String description, int amount, LocalDateTime addedOn) {
+    public Expense addExpense(String category, String description, int amount, LocalDateTime addedOn) {
         if(canAddInSheetForThisMonth(addedOn)) {
             Expense savedExpense = expenseRepository.save(Expense.of(category, description, amount, addedOn));
             this.expenses = ImmutableSet.<Expense>builder()
                     .addAll(expenses)
                     .add(savedExpense)
                     .build();
-            return;
+            return savedExpense;
         }
         throw new IllegalArgumentException("Expense is not for this month/year");
     }

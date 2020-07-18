@@ -9,6 +9,7 @@ import com.expense.tracker.adapter.web.NewSavingCommand;
 import com.expense.tracker.domain.Expense;
 import com.expense.tracker.domain.ExpenseRepository;
 import com.expense.tracker.domain.ExpenseSheet;
+import com.expense.tracker.domain.Transaction;
 import com.expense.tracker.domain.TransactionRepository;
 import com.expense.tracker.domain.TxnType;
 import lombok.extern.apachecommons.CommonsLog;
@@ -31,11 +32,11 @@ public class ExpenseSheetService {
         this.expenseRepository = expenseRepository;
     }
 
-    public void addNewExpenseInSheet(final NewExpenseCommand command) {
+    public Expense addNewExpenseInSheet(final NewExpenseCommand command) {
         log.info(command);
         final Clock clock = LocalDateUtil.fixedClockFor(command.getMonthYear());
         ExpenseSheet sheet = new ExpenseSheet(clock, txnRepository, expenseRepository);
-        sheet.addExpense(
+        return sheet.addExpense(
                 command.getCategory(),
                 command.getDescription(),
                 DecimalUtil.decimalToCents(command.getAmount()),
@@ -43,10 +44,10 @@ public class ExpenseSheetService {
         );
     }
 
-    public void addIncomeSourceInSheet(final NewIncomeCommand command) {
+    public Transaction addIncomeSourceInSheet(final NewIncomeCommand command) {
         final Clock clock = LocalDateUtil.fixedClockFor(command.getMonthYear());
         ExpenseSheet sheet = new ExpenseSheet(clock, txnRepository, expenseRepository);
-        sheet.addTransaction(
+        return sheet.addTransaction(
                 command.getSource(),
                 TxnType.INCOME,
                 DecimalUtil.decimalToCents(command.getAmount()),
@@ -54,10 +55,10 @@ public class ExpenseSheetService {
                 );
     }
 
-    public void addSavingInSheet(final NewSavingCommand command) {
+    public Transaction addSavingInSheet(final NewSavingCommand command) {
         final Clock clock = LocalDateUtil.fixedClockFor(command.getMonthYear());
         ExpenseSheet sheet = new ExpenseSheet(clock, txnRepository, expenseRepository);
-        sheet.addTransaction(
+        return sheet.addTransaction(
                 command.getSource(),
                 TxnType.SAVING,
                 DecimalUtil.decimalToCents(command.getAmount()),
