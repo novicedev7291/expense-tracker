@@ -9,7 +9,7 @@ logging:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:h2:file:./expense-tracker
+    url: jdbc:h2:file:./expense-tracker;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE;
     username: sa
     password:
     driver-class-name: org.h2.Driver
