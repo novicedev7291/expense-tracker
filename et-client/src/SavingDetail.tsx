@@ -7,6 +7,8 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 
 import { Link } from "react-router-dom";
 
@@ -15,12 +17,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TopHeading from "./components/TopHeading";
 import AppDatePicker from "./components/AppDatePicker";
 import InputGroup from "react-bootstrap/InputGroup";
-import { useLocalState } from "./hooks";
+import { useLocalState, useUIDispatch } from "./hooks";
+import { Saving } from "./Types";
 
 interface Props extends RouteComponentProps<{ id: string }> {}
 
 export const SavingDetail: React.FC<Props> = ({ match }: Props) => {
-  const { selectSaving } = useLocalState();
+  const [values, setValues] = React.useState<Saving>({
+    id: 0,
+    source: "",
+    amount: 0,
+    addedOn: new Date(),
+  });
+  const { selectSaving, loading, error } = useLocalState();
+
+  const { addNewSaving } = useUIDispatch();
+
+  const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues({ ...values, [event.target.name]: event.target.value });
+  };
+
+  const handleDateChange = (value: Date) =>
+    setValues({ ...values, addedOn: value });
+
+  const handleAddNewSaving = () => addNewSaving(values);
+
   if (match) {
     const { id } = match.params;
     if (id === "new") {
@@ -54,7 +75,13 @@ export const SavingDetail: React.FC<Props> = ({ match }: Props) => {
                     <Card.Body>
                       <Form>
                         <Form.Group>
-                          <Form.Control placeholder="Source" type="text" />
+                          <Form.Control
+                            placeholder="Source"
+                            type="text"
+                            name="source"
+                            onChange={handleFieldChange}
+                            value={values.source}
+                          />
                         </Form.Group>
                         <Form.Group>
                           <InputGroup>
@@ -63,15 +90,42 @@ export const SavingDetail: React.FC<Props> = ({ match }: Props) => {
                                 <FontAwesomeIcon icon="rupee-sign" />
                               </InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control placeholder="Amount" type="number" />
+                            <Form.Control
+                              placeholder="Amount"
+                              type="number"
+                              name="amount"
+                              onChange={handleFieldChange}
+                              value={values.amount}
+                            />
                           </InputGroup>
                         </Form.Group>
                         <Form.Group>
-                          <AppDatePicker dateFormat="MMMM DD, YYYY" />
+                          <AppDatePicker
+                            dateFormat="MMMM DD, YYYY"
+                            $value={values.addedOn}
+                            handleDayChange={handleDateChange}
+                          />
                         </Form.Group>
                       </Form>
-                      <Button variant="primary" block>
-                        <FontAwesomeIcon icon="plus" /> Add
+                      {error && <Alert variant="danger">{error}</Alert>}
+                      <Button
+                        variant="primary"
+                        block
+                        disabled={loading}
+                        onClick={handleAddNewSaving}
+                      >
+                        {loading ? (
+                          <Spinner
+                            as="span"
+                            size="sm"
+                            animation="border"
+                            role="status"
+                          />
+                        ) : (
+                          <>
+                            <FontAwesomeIcon icon="plus" /> Add
+                          </>
+                        )}
                       </Button>
                     </Card.Body>
                   </Card>

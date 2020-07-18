@@ -53,4 +53,50 @@ export class ETApiService {
     const expenseJson = await response.json();
     return this.mapJsonToObject(expenseJson) as Expense;
   };
+
+  addNewIncome = async (income: Income): Promise<Income> => {
+    const addedOn = new AppDate(income.addedOn);
+    const monthYearVal = addedOn.toMonthYearStr();
+
+    const bodyData = Object.assign({}, income, {
+      monthYear: monthYearVal,
+      addedOn: addedOn.toFormat(API_DATE_FORMAT),
+    });
+
+    console.log(bodyData);
+
+    const response = await fetch("/incomeSources", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyData),
+    });
+    const incomeJson = await response.json();
+    return this.mapJsonToObject(incomeJson) as Income;
+  };
+
+  addNewSaving = async (saving: Saving): Promise<Saving> => {
+    const addedOn = new AppDate(saving.addedOn);
+    const monthYearVal = addedOn.toMonthYearStr();
+
+    const bodyData = Object.assign({}, saving, {
+      monthYear: monthYearVal,
+      addedOn: addedOn.toFormat(API_DATE_FORMAT),
+    });
+
+    console.log(bodyData);
+
+    const response = await fetch("/savings", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyData),
+    });
+    const savingJson = await response.json();
+    return this.mapJsonToObject(savingJson) as Saving;
+  };
 }

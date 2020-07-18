@@ -98,6 +98,54 @@ const addExpense = (state: AppState, payload: Payload<Expense>): AppState => {
   return state;
 };
 
+const addIncome = (state: AppState, payload: Payload<Income>): AppState => {
+  const income = payload.data! as Income;
+  console.log(state);
+  if (income) {
+    const monthYearVal = new AppDate(income.addedOn).toMonthYearStr();
+    const monthYearMap = state.monthYear || new Map<string, MonthYearObj>();
+    const monthYearObj = monthYearMap.get(monthYearVal) || {};
+
+    let incomes = monthYearObj.incomes || new Map<number, Income>();
+    incomes.set(income.id, income);
+
+    monthYearObj.incomes = incomes;
+    monthYearMap.set(monthYearVal, monthYearObj);
+    return {
+      ...state,
+      monthYear: monthYearMap,
+      loading: false,
+      error: undefined,
+    };
+  }
+
+  return state;
+};
+
+const addSaving = (state: AppState, payload: Payload<Saving>): AppState => {
+  const saving = payload.data! as Saving;
+  console.log(state);
+  if (saving) {
+    const monthYearVal = new AppDate(saving.addedOn).toMonthYearStr();
+    const monthYearMap = state.monthYear || new Map<string, MonthYearObj>();
+    const monthYearObj = monthYearMap.get(monthYearVal) || {};
+
+    let savings = monthYearObj.savings || new Map<number, Saving>();
+    savings.set(saving.id, saving);
+
+    monthYearObj.savings = savings;
+    monthYearMap.set(monthYearVal, monthYearObj);
+    return {
+      ...state,
+      monthYear: monthYearMap,
+      loading: false,
+      error: undefined,
+    };
+  }
+
+  return state;
+};
+
 const appReducer = (state: AppState, action: ReducerAction): AppState => {
   console.log(action);
   switch (action.type) {
@@ -119,6 +167,10 @@ const appReducer = (state: AppState, action: ReducerAction): AppState => {
       };
     case ADD_EXPENSE:
       return addExpense(state, action.payload);
+    case ADD_INCOME:
+      return addIncome(state, action.payload);
+    case ADD_SAVING:
+      return addSaving(state, action.payload);
     case ERROR:
       return { ...state, error: action.error, loading: false };
     default:

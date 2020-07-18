@@ -23,6 +23,8 @@ import {
   ERROR,
   ADD_EXPENSE,
   API_CALL,
+  ADD_SAVING,
+  ADD_INCOME,
 } from "../context/reducers";
 import { ETApiService } from "../service/ETApiService";
 
@@ -143,10 +145,54 @@ export const useUIDispatch = () => {
       dispatch!({ type: API_CALL, payload: new Payload() });
       etService
         .addNewExpense(expense)
-        .then((expense) => {
+        .then((expenseData) => {
           dispatch!({
             type: ADD_EXPENSE,
-            payload: new Payload<Expense>(undefined, expense),
+            payload: new Payload<Expense>(undefined, expenseData),
+          });
+        })
+        .catch((err) => {
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(undefined, undefined),
+            error: err,
+          });
+        });
+    },
+    [dispatch]
+  );
+
+  const addNewIncome = React.useCallback(
+    (income: Income) => {
+      dispatch!({ type: API_CALL, payload: new Payload() });
+      etService
+        .addNewIncome(income)
+        .then((incomeData) => {
+          dispatch!({
+            type: ADD_SAVING,
+            payload: new Payload<Income>(undefined, incomeData),
+          });
+        })
+        .catch((err) => {
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(undefined, undefined),
+            error: err,
+          });
+        });
+    },
+    [dispatch]
+  );
+
+  const addNewSaving = React.useCallback(
+    (saving: Saving) => {
+      dispatch!({ type: API_CALL, payload: new Payload() });
+      etService
+        .addNewSaving(saving)
+        .then((savingData) => {
+          dispatch!({
+            type: ADD_INCOME,
+            payload: new Payload<Income>(undefined, savingData),
           });
         })
         .catch((err) => {
@@ -166,5 +212,7 @@ export const useUIDispatch = () => {
     fetchSavings,
     fetchIncomes,
     addNewExpense,
+    addNewIncome,
+    addNewSaving,
   };
 };
