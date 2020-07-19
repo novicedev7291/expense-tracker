@@ -43,7 +43,7 @@ export const Expense: React.FC<Props> = ({ match }) => {
         variantClassName="bg-danger"
       />
 
-      <section id="action-section" className="py-4 mb-4 bg-light">
+      <section id="action-section" className="py-2 mb-2 bg-light">
         <Container>
           <Row>
             <Col sm="4" className="mb-3">

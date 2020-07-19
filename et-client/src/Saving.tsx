@@ -37,7 +37,7 @@ export const Saving: React.FC<Props> = ({ match }) => {
     <React.Fragment>
       <TopHeading iconName="hand-holding-usd" title="Saving" />
 
-      <section id="action-section" className="py-4 mb-4 bg-light">
+      <section id="action-section" className="py-2 mb-2 bg-light">
         <Container>
           <Row>
             <Col sm="4" className="mb-3">
@@ -80,8 +80,7 @@ export const Saving: React.FC<Props> = ({ match }) => {
                     <thead className="thead-dark">
                       <tr>
                         <th>#</th>
-                        <th>Category</th>
-                        <th>Description</th>
+                        <th>Source</th>
                         <th>Amount</th>
                         <th>Added On</th>
                         <th></th>

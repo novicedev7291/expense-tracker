@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { Income, Saving, Expense } from "../Types";
+import { Income, Saving, Expense, Summary } from "../Types";
 import {
   selectExpenses,
   selectIncomes,
@@ -8,6 +8,7 @@ import {
   selectExpense,
   selectIncome,
   selectSaving,
+  selectSummary,
 } from "../context/selectors";
 import {
   AppDispatchContext,
@@ -25,6 +26,7 @@ import {
   API_CALL,
   ADD_SAVING,
   ADD_INCOME,
+  ADD_SUMMARY,
 } from "../context/reducers";
 import { ETApiService } from "../service/ETApiService";
 
@@ -37,7 +39,7 @@ export interface ContextStateValue {
   selectExpense: (id: number) => Expense | undefined;
   selectSaving: (id: number) => Saving | undefined;
   selectIncome: (id: number) => Income | undefined;
-  summary: { totalIncome: number; totalExpense: number; totalSaving: number };
+  summary: Summary;
   error: string | undefined;
 }
 
@@ -61,7 +63,7 @@ export const useLocalState = (): ContextStateValue => {
     selectExpense: getExpenseById,
     selectIncome: getIncomeById,
     selectSaving: getSavignById,
-    summary: { totalExpense: 0.0, totalIncome: 0.0, totalSaving: 0.0 },
+    summary: selectSummary(state),
     loading: state.loading,
     error: state.error,
   };
@@ -69,6 +71,20 @@ export const useLocalState = (): ContextStateValue => {
 
 export const useUIDispatch = () => {
   const dispatch = useContext(AppDispatchContext);
+
+  const fetchSummary = React.useCallback(
+    (value: AppDate) => {
+      etService
+        .getSummary(value.toMonthYearStr())
+        .then((summary) =>
+          dispatch!({ type: ADD_SUMMARY, payload: new Payload(value, summary) })
+        )
+        .catch((err) =>
+          dispatch!({ type: ERROR, payload: new Payload(), error: err })
+        );
+    },
+    [dispatch]
+  );
 
   const changeMonthYear = React.useCallback(
     (value: AppDate) => {
@@ -214,5 +230,6 @@ export const useUIDispatch = () => {
     addNewExpense,
     addNewIncome,
     addNewSaving,
+    fetchSummary,
   };
 };

@@ -19,7 +19,7 @@ import { SavingDetail } from "./SavingDetail";
 
 const App: React.FunctionComponent = () => (
   <React.Fragment>
-    <Navbar bg="dark" expand="sm" variant="dark">
+    <Navbar bg="dark" expand="sm" variant="dark" sticky="top">
       <div className="container">
         <Navbar.Brand href="/">Expense Tracker</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-collapse" />

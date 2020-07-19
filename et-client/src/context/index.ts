@@ -24,6 +24,7 @@ export interface MonthYearObj {
   totalIncome?: number;
   totalSaving?: number;
   totalExpense?: number;
+  totalBalance?: number;
 }
 
 export interface AppState {

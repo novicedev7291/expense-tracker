@@ -111,12 +111,10 @@ public class SheetController {
         int totalSaving = sheet.totalSaving();
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SummaryDto(
-                        DecimalUtil.inRupeesFormat(totalIncome),
-                        DecimalUtil.inRupeesFormat(totalExpenses),
-                        DecimalUtil.inRupeesFormat(totalSaving),
-                        DecimalUtil.inRupeesFormat(
-                                totalIncome - totalSaving - totalExpenses
-                        )
+                        DecimalUtil.centsToDecimal(totalIncome),
+                       DecimalUtil.centsToDecimal(totalExpenses),
+                        DecimalUtil.centsToDecimal(totalSaving),
+                        DecimalUtil.centsToDecimal(totalIncome - totalSaving - totalExpenses)
                 )
         );
     }

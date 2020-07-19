@@ -1,4 +1,4 @@
-import { Expense, Income, Saving } from "../Types";
+import { Expense, Income, Saving, Summary } from "../Types";
 import LocaleUtils from "react-day-picker/moment";
 import { API_DATE_FORMAT } from "../constant";
 import { AppDate } from "../context";
@@ -23,6 +23,12 @@ export class ETApiService {
     const res = await fetch(`/incomeSources?monthYear=${monthYear}`);
     const incomeJsonArray = (await res.json()) as any[];
     return incomeJsonArray.map((value) => this.mapJsonToObject(value));
+  };
+
+  getSummary = async (monthYear: string): Promise<Summary> => {
+    const response = await fetch(`/summary?monthYear=${monthYear}`);
+    const summaryJson = await response.json();
+    return Object.assign({}, summaryJson) as Summary;
   };
 
   getSavings = async (monthYear: string): Promise<Saving[]> => {

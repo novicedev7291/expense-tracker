@@ -1,4 +1,4 @@
-import { Expense, Income, Saving } from "../Types";
+import { Expense, Income, Saving, Summary } from "../Types";
 
 import { AppState, MonthYearObj, Payload, ReducerAction, AppDate } from "./";
 
@@ -8,7 +8,7 @@ export const ADD_SAVINGS = "ADD_SAVINGS";
 export const ADD_INCOME = "ADD_INCOME";
 export const ADD_SAVING = "ADD_INCOME";
 export const ADD_EXPENSE = "ADD_EXPENSE";
-export const FETCH_SUMMARY = "FETCH_SUMMARY";
+export const ADD_SUMMARY = "ADD_SUMMARY";
 export const CHANGE_MONTH = "CHANGE_MONTH";
 export const API_CALL = "API_CALL";
 export const ERROR = "ERROR";
@@ -146,6 +146,30 @@ const addSaving = (state: AppState, payload: Payload<Saving>): AppState => {
   return state;
 };
 
+const addSummary = (state: AppState, payload: Payload<Summary>): AppState => {
+  const summary = payload.data! as Summary;
+
+  if (summary) {
+    const monthYearVal = payload.monthYear!.toMonthYearStr();
+    const sheet = state.monthYear || new Map<string, MonthYearObj>();
+    const monthYearObj = sheet.get(monthYearVal) || {};
+    monthYearObj.totalBalance = summary.balance;
+    monthYearObj.totalExpense = summary.expense;
+    monthYearObj.totalIncome = summary.income;
+    monthYearObj.totalSaving = summary.saving;
+
+    sheet.set(monthYearVal, monthYearObj);
+
+    return {
+      ...state,
+      monthYear: sheet,
+      loading: false,
+      error: undefined,
+    };
+  }
+  return state;
+};
+
 const appReducer = (state: AppState, action: ReducerAction): AppState => {
   console.log(action);
   switch (action.type) {
@@ -171,6 +195,8 @@ const appReducer = (state: AppState, action: ReducerAction): AppState => {
       return addIncome(state, action.payload);
     case ADD_SAVING:
       return addSaving(state, action.payload);
+    case ADD_SUMMARY:
+      return addSummary(state, action.payload);
     case ERROR:
       return { ...state, error: action.error, loading: false };
     default:

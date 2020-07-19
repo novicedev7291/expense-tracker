@@ -18,6 +18,7 @@ import { MONTH_YEAR_FORMAT } from "./constant";
 
 import { useLocalState, useUIDispatch } from "./hooks";
 import { AppDate } from "./context";
+import SummaryChart from "./components/SummaryChart";
 
 interface Props {}
 
@@ -26,20 +27,22 @@ export const Dashboard: React.FC<Props> = () => {
     expenses,
     loading,
     error,
+    summary,
     currentMonthYear: monthYear,
   } = useLocalState();
 
-  const { fetchExpenses, changeMonthYear } = useUIDispatch();
+  const { fetchExpenses, fetchSummary, changeMonthYear } = useUIDispatch();
 
   useEffect(() => {
     fetchExpenses(monthYear);
-  }, [monthYear, fetchExpenses]);
+    fetchSummary(monthYear);
+  }, [monthYear, fetchExpenses, fetchSummary]);
 
   return (
     <React.Fragment>
       <TopHeading iconName="cog" title="Dashboard" />
 
-      <section id="action-section" className="py-4 mb-4 bg-light">
+      <section id="action-section" className="py-2 mb-2 bg-light">
         <Container>
           <Row>
             <Col sm="4" className="mb-3">
@@ -65,9 +68,7 @@ export const Dashboard: React.FC<Props> = () => {
         <Container>
           <Row>
             <Col md="4">
-              <div className="bg-warning mb-4 text-white text-center">
-                Charts will come here
-              </div>
+              <SummaryChart {...summary} />
             </Col>
             <Col md="8">
               {loading ? (

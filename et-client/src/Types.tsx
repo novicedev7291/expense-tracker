@@ -36,3 +36,10 @@ export interface Saving {
   amount: number;
   addedOn: Date;
 }
+
+export interface Summary {
+  income: number;
+  saving: number;
+  expense: number;
+  balance: number;
+}

@@ -1,5 +1,5 @@
 import { AppState, MonthYearObj } from "./";
-import { Expense, Income, Saving } from "../Types";
+import { Expense, Income, Saving, Summary } from "../Types";
 
 const selectSheet = (state: AppState): MonthYearObj | undefined => {
   const monthYearKey = state.currentMonthYear.toMonthYearStr();
@@ -68,4 +68,17 @@ export const selectSaving = (
     return sheet.savings.get(id)!;
   }
   return undefined;
+};
+
+export const selectSummary = (state: AppState): Summary => {
+  const sheet = selectSheet(state);
+  if (sheet) {
+    return {
+      income: sheet.totalIncome!,
+      balance: sheet.totalBalance!,
+      saving: sheet.totalSaving!,
+      expense: sheet.totalExpense!,
+    };
+  }
+  return { income: 0, balance: 0, saving: 0, expense: 0 };
 };

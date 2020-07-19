@@ -46,7 +46,7 @@ export const Income: React.FC<Props> = ({ match }) => {
       <section id="action-section" className="py-2 mb-2 bg-light">
         <Container>
           <Row>
-            <Col sm="4">
+            <Col sm="4" className="mb-3">
               <AppDatePicker
                 dateFormat={MONTH_YEAR_FORMAT}
                 $value={monthYear.value}
@@ -86,8 +86,7 @@ export const Income: React.FC<Props> = ({ match }) => {
                     <thead className="thead-dark">
                       <tr>
                         <th>#</th>
-                        <th>Category</th>
-                        <th>Description</th>
+                        <th>Source</th>
                         <th>Amount</th>
                         <th>Added On</th>
                         <th></th>
