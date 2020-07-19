@@ -36,7 +36,7 @@ export const Income: React.FC<Props> = ({ match }) => {
       <TopActions
         actionDate={monthYear}
         actionNavLabel="Add Income"
-        actionNavLink={`/${url}/new`}
+        actionNavLink={`${url}/new`}
         actionNavVariant="btn-success"
         handleDateChange={(value: Date) => changeMonthYear(new AppDate(value))}
       />

@@ -37,7 +37,7 @@ export const Expense: React.FC<Props> = ({ match }) => {
       <TopActions
         actionDate={monthYear}
         actionNavLabel="Add Expense"
-        actionNavLink={`/${url}/new`}
+        actionNavLink={`${url}/new`}
         handleDateChange={(value: Date) => changeMonthYear(new AppDate(value))}
       />
       <ColumnView

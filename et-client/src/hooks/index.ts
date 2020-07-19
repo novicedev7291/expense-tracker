@@ -29,6 +29,7 @@ import {
   ADD_SUMMARY,
 } from "../context/reducers";
 import { ETApiService } from "../service/ETApiService";
+import { useHistory } from "react-router";
 
 export interface ContextStateValue {
   currentMonthYear: AppDate;
@@ -71,6 +72,7 @@ export const useLocalState = (): ContextStateValue => {
 
 export const useUIDispatch = () => {
   const dispatch = useContext(AppDispatchContext);
+  const history = useHistory();
 
   const fetchSummary = React.useCallback(
     (value: AppDate) => {
@@ -166,6 +168,8 @@ export const useUIDispatch = () => {
             type: ADD_EXPENSE,
             payload: new Payload<Expense>(undefined, expenseData),
           });
+
+          history.goBack();
         })
         .catch((err) => {
           dispatch!({
@@ -175,7 +179,7 @@ export const useUIDispatch = () => {
           });
         });
     },
-    [dispatch]
+    [dispatch, history]
   );
 
   const addNewIncome = React.useCallback(
@@ -188,6 +192,7 @@ export const useUIDispatch = () => {
             type: ADD_SAVING,
             payload: new Payload<Income>(undefined, incomeData),
           });
+          history.goBack();
         })
         .catch((err) => {
           dispatch!({
@@ -197,7 +202,7 @@ export const useUIDispatch = () => {
           });
         });
     },
-    [dispatch]
+    [dispatch, history]
   );
 
   const addNewSaving = React.useCallback(
@@ -210,6 +215,7 @@ export const useUIDispatch = () => {
             type: ADD_INCOME,
             payload: new Payload<Income>(undefined, savingData),
           });
+          history.goBack();
         })
         .catch((err) => {
           dispatch!({
@@ -219,7 +225,7 @@ export const useUIDispatch = () => {
           });
         });
     },
-    [dispatch]
+    [dispatch, history]
   );
 
   return {

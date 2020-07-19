@@ -31,7 +31,7 @@ export const Saving: React.FC<Props> = ({ match }) => {
       <TopActions
         actionDate={monthYear}
         actionNavLabel="Add Saving"
-        actionNavLink={`/${url}/new`}
+        actionNavLink={`${url}/new`}
         actionNavVariant="btn-primary"
         handleDateChange={(value: Date) => changeMonthYear(new AppDate(value))}
       />
