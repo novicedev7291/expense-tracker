@@ -6,6 +6,7 @@ import com.expense.tracker.domain.ExpenseRepository;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
@@ -39,5 +40,17 @@ public class FakeExpenseRepository implements ExpenseRepository {
     public List<Expense> saveAll(List<Expense> expenses) {
         expenses.forEach(this::save);
         return expenses;
+    }
+
+    @Override
+    public Optional<Expense> findById(Long id) {
+        return expenses.stream()
+                .filter(expense -> expense.getId().equals(id))
+                .findAny();
+    }
+
+    @Override
+    public void delete(Expense expense){
+        expenses.remove(expense);
     }
 }

@@ -1,17 +1,17 @@
 package com.expense.tracker.adapter.service;
 
+import com.expense.tracker.adapter.LocalDateUtil;
 import com.expense.tracker.adapter.repository.FakeExpenseRepository;
 import com.expense.tracker.adapter.repository.FakeTransactionRepository;
 import com.expense.tracker.adapter.web.ExpenseCsvContent;
 import com.expense.tracker.adapter.web.NewExpenseCommand;
 import com.expense.tracker.adapter.web.NewIncomeCommand;
 import com.expense.tracker.adapter.web.NewSavingCommand;
-import com.expense.tracker.domain.ExpenseRepository;
-import com.expense.tracker.domain.ExpenseSheet;
-import com.expense.tracker.domain.TransactionRepository;
+import com.expense.tracker.domain.*;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -128,5 +128,77 @@ public class ExpenseSheetServiceTest {
         String csvContent = "Category,Description,Amount,Added On\nRent,Monthly rent of house,21000,2020-06-02\nCredit Card,Credit card bill for the month,2000,2020-06-05\nGroceries,Groceries payment this week,3000,2020-06-11\nMobile Bill,Mobile postpaid bill for this month,588.49,2020-06-22\nGym,Gym fee for this month,1000,2020-06-10\nMiscellaneous,Expenses wh`ich were random,5892,2020-06-26\n";
         final ExpenseCsvContent content = new ExpenseCsvContent(csvContent, monthYear);
         assertThrows(IllegalArgumentException.class, () -> service.importExpensesFromCsv(content));
+    }
+
+    @Test
+    void shouldDeleteTransactionById() {
+        final String monthYear = "05/2019";
+        final ExpenseSheetService service =
+                new ExpenseSheetService(txnRepository, expenseRepository);
+        final NewIncomeCommand incomeCommand1 =
+                new NewIncomeCommand(monthYear, "Salary", new BigDecimal("10000"), "2019-05-12");
+        final NewIncomeCommand incomeCommand2 =
+                new NewIncomeCommand(monthYear, "Salary", new BigDecimal("10000"), "2019-05-12");
+        service.addIncomeSourceInSheet(incomeCommand1);
+        service.addIncomeSourceInSheet(incomeCommand2);
+
+        Transaction transaction = service.getExpenseSheetFor(monthYear).incomeSources().asList().get(1);
+
+        Transaction deletedTransaction = service.deleteTransactionGivenId(transaction.getId());
+
+        assertThat(deletedTransaction).isNotNull();
+        assertThat(deletedTransaction).isEqualToComparingOnlyGivenFields(transaction,
+                "source", "amount", "addedOn");
+    }
+
+    @Test
+    void mustFailToDeleteWrongTransactionId(){
+        ExpenseSheetService service = new ExpenseSheetService(txnRepository, expenseRepository);
+        assertThrows(IllegalArgumentException.class, () ->
+                service.deleteTransactionGivenId(1));
+    }
+
+    @Test
+    void shouldDeleteExpenseById() {
+        final String monthYear = "05/2019";
+        final ExpenseSheetService service =
+                new ExpenseSheetService(txnRepository, expenseRepository);
+        final NewExpenseCommand command1 =
+                NewExpenseCommand.of(
+                        monthYear,
+                        null,
+                        "Miscellaneous expense",
+                        new BigDecimal("12.29"),
+                        "2019-05-21"
+                );
+        final NewExpenseCommand command2 =
+                NewExpenseCommand.of(
+                        monthYear,
+                        null,
+                        "Miscellaneous expense",
+                        new BigDecimal("30.29"),
+                        "2019-05-21"
+                );
+        service.addNewExpenseInSheet(command1);
+        service.addNewExpenseInSheet(command2);
+
+        Expense expense = service.getExpenseSheetFor(monthYear).expenses().asList().get(1);
+
+        Expense deletedExpense = service.deleteExpenseGivenId(expense.getId());
+
+        assertThat(deletedExpense).isNotNull();
+        assertThat(deletedExpense).isEqualToComparingOnlyGivenFields(expense,
+                "id", "addedOn", "category", "amount");
+        ExpenseSheet updatedSheet = service.getExpenseSheetFor(monthYear);
+        assertThat(updatedSheet.expenses().size()).isEqualTo(1);
+    }
+
+    @Test
+    void mustFailToDeleteWrongExpenseById() {
+        final String monthYear = "05/2019";
+        final ExpenseSheetService service =
+                new ExpenseSheetService(txnRepository, expenseRepository);
+
+        assertThrows(IllegalArgumentException.class, () -> service.deleteExpenseGivenId(1L));
     }
 }

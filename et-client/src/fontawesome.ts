@@ -16,6 +16,7 @@ import {
   faMoneyBillWave,
   faArrowLeft,
   faRupeeSign,
+  faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -33,5 +34,6 @@ library.add(
   faMoneyBillWave,
   faWallet,
   faArrowLeft,
-  faRupeeSign
+  faRupeeSign, 
+  faTrashAlt
 );

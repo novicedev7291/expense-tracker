@@ -20,7 +20,7 @@ export const ExpenseDetail: React.FC<Props> = ({ match, history }) => {
   });
 
   const { selectExpense, loading, error } = useLocalState();
-  const { addNewExpense } = useUIDispatch();
+  const { addNewExpense, deleteExpense } = useUIDispatch();
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [event.target.name]: event.target.value });
@@ -28,6 +28,11 @@ export const ExpenseDetail: React.FC<Props> = ({ match, history }) => {
 
   const handleDateChange = (value: Date) => {
     setValues({ ...values, addedOn: value });
+  };
+
+  const handleOnDelete = (expense: Expense) => {
+    history.goBack();
+    deleteExpense(expense);
   };
 
   const handleAddExpense = () => {
@@ -94,6 +99,7 @@ export const ExpenseDetail: React.FC<Props> = ({ match, history }) => {
           values={formValues}
           variant="danger"
           readOnly
+          handleOnDeleteClick={() => handleOnDelete(expense!)}
         />
       );
     }

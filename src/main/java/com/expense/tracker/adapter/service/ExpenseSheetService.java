@@ -65,6 +65,20 @@ public class ExpenseSheetService {
         );
     }
 
+    public Transaction deleteTransactionGivenId(final Integer id) {
+        Transaction txn = txnRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid transaction"));
+        txnRepository.delete(txn);
+        return txn;
+    }
+
+    public Expense deleteExpenseGivenId(final Long id) {
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid expense"));
+        expenseRepository.delete(expense);
+        return expense;
+    }
+
     public ExpenseSheet getExpenseSheetFor(final String monthYear) {
         final Clock clock = LocalDateUtil.fixedClockFor(monthYear);
         return new ExpenseSheet(clock, txnRepository, expenseRepository);

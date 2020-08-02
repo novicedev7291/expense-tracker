@@ -27,6 +27,9 @@ import {
   ADD_SAVING,
   ADD_INCOME,
   ADD_SUMMARY,
+  DELETE_EXPENSE,
+  DELETE_INCOME,
+  DELETE_SAVING,
 } from "../context/reducers";
 import { ETApiService } from "../service/ETApiService";
 import { useHistory } from "react-router";
@@ -228,6 +231,71 @@ export const useUIDispatch = () => {
     [dispatch, history]
   );
 
+  const deleteExpense = React.useCallback(
+    (expense: Expense) => {
+      etService
+        .deleteExpense(expense.id)
+        .then((deletedExpense) => {
+          dispatch!({
+            type: DELETE_EXPENSE,
+            payload: new Payload(undefined, deletedExpense),
+          });
+        })
+        .catch((err) =>
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(undefined, undefined),
+            error: err,
+          })
+        );
+    },
+    [dispatch]
+  );
+
+  const deleteIncome = React.useCallback(
+    (income: Income) => {
+      etService
+        .deleteIncome(income.id)
+        .then((deletedIncome) => {
+          dispatch!({
+            type: DELETE_INCOME,
+            payload: new Payload(undefined, deletedIncome),
+            error: undefined,
+          });
+        })
+        .catch((err) =>
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(undefined, undefined),
+            error: err,
+          })
+        );
+    },
+    [dispatch]
+  );
+
+  const deleteSaving = React.useCallback(
+    (saving: Saving) => {
+      etService
+        .deleteSaving(saving.id)
+        .then((deletedSaving) => {
+          dispatch!({
+            type: DELETE_SAVING,
+            payload: new Payload(undefined, deletedSaving),
+            error: undefined,
+          });
+        })
+        .catch((err) =>
+          dispatch!({
+            type: ERROR,
+            payload: new Payload(undefined, undefined),
+            error: err,
+          })
+        );
+    },
+    [dispatch]
+  );
+
   return {
     changeMonthYear,
     fetchExpenses,
@@ -237,5 +305,8 @@ export const useUIDispatch = () => {
     addNewIncome,
     addNewSaving,
     fetchSummary,
+    deleteExpense,
+    deleteIncome,
+    deleteSaving,
   };
 };

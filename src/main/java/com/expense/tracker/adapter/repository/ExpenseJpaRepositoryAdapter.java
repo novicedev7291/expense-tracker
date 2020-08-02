@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="kuldeepyadav7291@gmail.com">Kuldeep</a>
@@ -31,5 +32,15 @@ class ExpenseJpaRepositoryAdapter implements ExpenseRepository {
     @Override
     public List<Expense> saveAll(List<Expense> expenses) {
         return jpaRepository.saveAll(expenses);
+    }
+
+    @Override
+    public Optional<Expense> findById(Long id) {
+        return jpaRepository.findById(id);
+    }
+
+    @Override
+    public void delete(Expense expense) {
+        jpaRepository.delete(expense);
     }
 }

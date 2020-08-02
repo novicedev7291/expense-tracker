@@ -6,6 +6,7 @@ import com.expense.tracker.domain.TransactionRepository;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -33,5 +34,15 @@ public class FakeTransactionRepository implements TransactionRepository {
         return txns.stream()
                 .filter(addedOnBetweenStartAndEndDate)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Transaction> findById(Integer id) {
+        return txns.stream().filter(txn -> txn.getId().equals(id)).findAny();
+    }
+
+    @Override
+    public void delete(Transaction txn) {
+        txns.remove(txn);
     }
 }

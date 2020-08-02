@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="kuldeepyadav7291@gmail.com">Kuldeep</a>
@@ -26,5 +27,15 @@ class TransactionJpaRepositoryAdapter implements TransactionRepository {
     @Override
     public List<Transaction> findTransactionsBetween(LocalDateTime startDate, LocalDateTime endDate) {
         return jpaRepository.findAllByAddedOnBetween(startDate, endDate);
+    }
+
+    @Override
+    public Optional<Transaction> findById(Integer id) {
+        return jpaRepository.findById(id);
+    }
+
+    @Override
+    public void delete(Transaction txn) {
+        jpaRepository.delete(txn);
     }
 }

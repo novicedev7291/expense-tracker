@@ -9,6 +9,9 @@ export const ADD_INCOME = "ADD_INCOME";
 export const ADD_SAVING = "ADD_INCOME";
 export const ADD_EXPENSE = "ADD_EXPENSE";
 export const ADD_SUMMARY = "ADD_SUMMARY";
+export const DELETE_EXPENSE = "DELETE_EXPENSE";
+export const DELETE_SAVING = "DELETE_SAVING";
+export const DELETE_INCOME = "DELETE_INCOME";
 export const CHANGE_MONTH = "CHANGE_MONTH";
 export const API_CALL = "API_CALL";
 export const ERROR = "ERROR";
@@ -146,6 +149,93 @@ const addSaving = (state: AppState, payload: Payload<Saving>): AppState => {
   return state;
 };
 
+const deleteExpense = (
+  state: AppState,
+  payload: Payload<Expense>
+): AppState => {
+  const deletedExpense = payload.data! as Expense;
+
+  if (deletedExpense) {
+    const monthYear = new AppDate(deletedExpense.addedOn).toMonthYearStr();
+    const monthYearMap = state.monthYear!;
+
+    if (monthYearMap && monthYearMap.has(monthYear)) {
+      let month = monthYearMap.get(monthYear);
+      const expenses = month!.expenses;
+
+      if (expenses && expenses.has(deletedExpense.id)) {
+        expenses.delete(deletedExpense.id);
+        month!.expenses = expenses;
+        monthYearMap.set(monthYear, month!);
+        return {
+          ...state,
+          monthYear: monthYearMap,
+          loading: false,
+          error: undefined,
+        };
+      }
+    }
+  }
+
+  return state;
+};
+
+const deleteIncome = (state: AppState, payload: Payload<Income>): AppState => {
+  const deletedIncome = payload.data! as Income;
+
+  if (deletedIncome) {
+    const monthYear = new AppDate(deletedIncome.addedOn).toMonthYearStr();
+    const monthYearMap = state.monthYear!;
+
+    if (monthYearMap && monthYearMap.has(monthYear)) {
+      let month = monthYearMap.get(monthYear);
+      const incomes = month!.incomes;
+
+      if (incomes && incomes.has(deletedIncome.id)) {
+        incomes.delete(deletedIncome.id);
+        month!.incomes = incomes;
+        monthYearMap.set(monthYear, month!);
+        return {
+          ...state,
+          monthYear: monthYearMap,
+          loading: false,
+          error: undefined,
+        };
+      }
+    }
+  }
+
+  return state;
+};
+
+const deleteSaving = (state: AppState, payload: Payload<Saving>): AppState => {
+  const deletedSaving = payload.data! as Saving;
+
+  if (deletedSaving) {
+    const monthYear = new AppDate(deletedSaving.addedOn).toMonthYearStr();
+    const monthYearMap = state.monthYear!;
+
+    if (monthYearMap && monthYearMap.has(monthYear)) {
+      let month = monthYearMap.get(monthYear);
+      const savings = month!.savings;
+
+      if (savings && savings.has(deletedSaving.id)) {
+        savings.delete(deletedSaving.id);
+        month!.savings = savings;
+        monthYearMap.set(monthYear, month!);
+        return {
+          ...state,
+          monthYear: monthYearMap,
+          loading: false,
+          error: undefined,
+        };
+      }
+    }
+  }
+
+  return state;
+};
+
 const addSummary = (state: AppState, payload: Payload<Summary>): AppState => {
   const summary = payload.data! as Summary;
 
@@ -197,6 +287,12 @@ const appReducer = (state: AppState, action: ReducerAction): AppState => {
       return addSaving(state, action.payload);
     case ADD_SUMMARY:
       return addSummary(state, action.payload);
+    case DELETE_EXPENSE:
+      return deleteExpense(state, action.payload);
+    case DELETE_INCOME:
+      return deleteIncome(state, action.payload);
+    case DELETE_SAVING:
+      return deleteSaving(state, action.payload);
     case ERROR:
       return { ...state, error: action.error, loading: false };
     default:

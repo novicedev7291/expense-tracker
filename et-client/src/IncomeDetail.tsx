@@ -19,7 +19,7 @@ export const IncomeDetail: React.FC<Props> = ({ match, history }) => {
   });
   const { selectIncome, loading, error } = useLocalState();
 
-  const { addNewIncome } = useUIDispatch();
+  const { addNewIncome, deleteIncome } = useUIDispatch();
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [event.target.name]: event.target.value });
@@ -29,6 +29,11 @@ export const IncomeDetail: React.FC<Props> = ({ match, history }) => {
     setValues({ ...values, addedOn: value });
 
   const handleAddNewIncome = () => addNewIncome(values);
+
+  const handleDeleteIncome = (income: Income) => {
+    history.goBack();
+    deleteIncome(income);
+  };
 
   const fields = [
     {
@@ -78,6 +83,7 @@ export const IncomeDetail: React.FC<Props> = ({ match, history }) => {
           readOnly
           variant="success"
           values={formValues}
+          handleOnDeleteClick={() => handleDeleteIncome(income!)}
         />
       );
     }

@@ -32,6 +32,7 @@ interface Props {
   handleOnAddClick?: () => void;
   handleFieldChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleDateChange?: (value: Date) => void;
+  handleOnDeleteClick?: () => void;
 }
 
 const TransactionForm: React.FC<Props> = ({
@@ -44,13 +45,14 @@ const TransactionForm: React.FC<Props> = ({
   handleOnAddClick,
   handleFieldChange,
   handleDateChange,
+  handleOnDeleteClick,
   fields,
 }) => {
   const fieldInputs = fields.map((field) => {
     const value = values.get(field.name);
     const jsxField =
       field.name === "amount" ? (
-        <FormGroup>
+        <FormGroup key={`${field.name}`}>
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text>
@@ -68,7 +70,7 @@ const TransactionForm: React.FC<Props> = ({
           </InputGroup>
         </FormGroup>
       ) : (
-        <Form.Group>
+        <Form.Group key={`${field.name}`}>
           <Form.Control
             placeholder={field.placeholder}
             name={field.name}
@@ -88,7 +90,28 @@ const TransactionForm: React.FC<Props> = ({
           <Col sm="3" md="4">
             <Card>
               <Card.Header>
-                <Card.Title>{title || "Please fill the details"}</Card.Title>
+                <Card.Title>
+                  <div className="d-flex">
+                    <div>{title || "Please fill the details"}</div>
+                    {readOnly && (
+                      <div className="d-flex flex-grow-1">
+                        <button
+                          onClick={() =>
+                            handleOnDeleteClick && handleOnDeleteClick()
+                          }
+                          style={{
+                            border: "none",
+                            marginLeft: "auto",
+                            background: "none",
+                          }}
+                          disabled={loading}
+                        >
+                          <FontAwesomeIcon icon="trash-alt" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </Card.Title>
               </Card.Header>
               <Card.Body>
                 <Form>

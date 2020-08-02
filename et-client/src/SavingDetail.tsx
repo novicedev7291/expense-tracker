@@ -19,7 +19,7 @@ export const SavingDetail: React.FC<Props> = ({ match, history }) => {
   });
   const { selectSaving, loading, error } = useLocalState();
 
-  const { addNewSaving } = useUIDispatch();
+  const { addNewSaving, deleteSaving } = useUIDispatch();
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [event.target.name]: event.target.value });
@@ -29,6 +29,11 @@ export const SavingDetail: React.FC<Props> = ({ match, history }) => {
     setValues({ ...values, addedOn: value });
 
   const handleAddNewSaving = () => addNewSaving(values);
+
+  const handleDeleteSaving = (saving: Saving) => {
+    history.goBack();
+    deleteSaving(saving);
+  };
 
   const fields = [
     {
@@ -79,6 +84,7 @@ export const SavingDetail: React.FC<Props> = ({ match, history }) => {
           readOnly
           variant="success"
           values={formValues}
+          handleOnDeleteClick={() => handleDeleteSaving(saving!)}
         />
       );
     }

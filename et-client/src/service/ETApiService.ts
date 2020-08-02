@@ -105,4 +105,31 @@ export class ETApiService {
     const savingJson = await response.json();
     return this.mapJsonToObject(savingJson) as Saving;
   };
+
+  deleteExpense = async (id: number): Promise<Expense> => {
+    const response = await fetch(`/expense/${id}`, {
+      method: "DELETE",
+      mode: "cors",
+    });
+    const deletedExpenseJson = await response.json();
+    return this.mapJsonToObject(deletedExpenseJson) as Expense;
+  };
+
+  deleteIncome = async (id: number): Promise<Income> => {
+    const response = await fetch(`/txn/${id}`, {
+      method: "DELETE",
+      mode: "cors",
+    });
+    const deletedIncomeJson = await response.json();
+    return this.mapJsonToObject(deletedIncomeJson) as Income;
+  };
+
+  deleteSaving = async (id: number): Promise<Saving> => {
+    const response = await fetch(`/txn/${id}`, {
+      method: "DELETE",
+      mode: "cors",
+    });
+    const deletedSavingJson = await response.json();
+    return this.mapJsonToObject(deletedSavingJson) as Saving;
+  };
 }
