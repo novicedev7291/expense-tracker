@@ -12,10 +12,11 @@
     <artifactId>expense-tracker</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>expense-tracker</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Expense tracker app for learning purpose</description>
 
     <properties>
         <java.version>1.8</java.version>
+        <kotlin.version>1.4.0</kotlin.version>
     </properties>
 
     <dependencies>
@@ -64,6 +65,20 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Kotlin required dependencies to work in spring project-->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-reflect</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -82,6 +97,46 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                   <args>
+                       <arg>-Xjsr305=strict</arg>
+                   </args>
+                   <compilerPlugins>
+                       <plugin>spring</plugin>
+                       <plugin>jpa</plugin>
+                       <plugin>all-open</plugin>
+                   </compilerPlugins>
+                   <pluginOptions>
+                       <option>all-open:annotation=javax.persistence.Entity</option>
+                       <option>all-open:annotation=javax.persistence.Embeddable</option>
+                       <option>all-open:annotation=javax.persistence.MappedSuperclass</option>
+                   </pluginOptions>
+               </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-noarg</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

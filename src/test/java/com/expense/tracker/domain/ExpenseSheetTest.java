@@ -47,8 +47,8 @@ public class ExpenseSheetTest {
         final List<Expense> expenses = new ArrayList<>(
                 ImmutableList.<Expense>builder()
                     .add(
-                            Expense.of(null, "Expense on given date", 100, june62020),
-                            Expense.of("Rent", "Rent on given date", 1000, june222020)
+                           Expense.Companion.of(null, "Expense on given date", 100, june62020),
+                           Expense.Companion.of("Rent", "Rent on given date", 1000, june222020)
                     ).build()
         );
         expenseSheet.addAllExpenses(expenses);

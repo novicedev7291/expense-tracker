@@ -4,6 +4,7 @@ import com.expense.tracker.adapter.DecimalUtil;
 import com.expense.tracker.adapter.LocalDateUtil;
 import com.expense.tracker.domain.Expense;
 import com.google.common.base.Splitter;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,7 +26,8 @@ class ExpenseCsvImporter {
         List<String> values = parseCsvRow(csvRow);
         LocalDateTime addedOn = LocalDateUtil.dateFromUIFormat(values.get(3));
         int amount = DecimalUtil.decimalToCents(new BigDecimal(values.get(2)));
-        return Expense.of(values.get(0), values.get(1), amount, addedOn);
+
+        return Expense.Companion.of(values.get(0), values.get(1), amount, addedOn);
     }
 
     static List<String> parseCsvRow(String csvRow) {

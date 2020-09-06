@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ExpenseTest {
     @Test
     void shouldCreateExpenseWithNullCategory() {
-        Expense expense = Expense.of(
+        Expense expense = Expense.Companion.of(
                 null,
                 "Expense with null category",
                 2000,
@@ -22,7 +22,7 @@ public class ExpenseTest {
 
     @Test
     void expenseWithNullCategoryShouldHaveMiscellaneousCategory() {
-        Expense expense = Expense.of(
+        Expense expense = Expense.Companion.of(
                 null,
                 "Expense with null category",
                 2000,

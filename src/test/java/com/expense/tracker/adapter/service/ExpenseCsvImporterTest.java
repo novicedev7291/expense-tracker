@@ -19,7 +19,7 @@ public class ExpenseCsvImporterTest {
         final String csvRow = "Credit Card,Credit card bill for the month,2000,2020-06-05";
         List<String> csvList = new ArrayList<>(ImmutableList.<String>builder().add(csvRow).build());
         List<Expense> expenseList = ExpenseCsvImporter.importFrom(csvList);
-        Expense expectedExpense = Expense.of(
+        Expense expectedExpense = Expense.Companion.of(
                 "Credit Card", "Credit card bill for the month", 200000,
                 LocalDateUtil.localDateOf(2020,6,5)
         );
@@ -40,11 +40,11 @@ public class ExpenseCsvImporterTest {
         assertThat(actualExpenses)
                 .usingElementComparatorIgnoringFields("id")
                 .containsExactly(
-                        Expense.of(
+                        Expense.Companion.of(
                                 "Credit Card", "Credit card bill for the month", 200000,
                                 LocalDateUtil.localDateOf(2020,6,5)
                         ),
-                        Expense.of(
+                        Expense.Companion.of(
                                 "Miscellaneous", "Expenses wh`ich were random", 589200,
                                 LocalDateUtil.localDateOf(2020,6,26)
                         )
@@ -56,7 +56,7 @@ public class ExpenseCsvImporterTest {
         final String csvRow = ",Credit card bill for the month,2000,2020-06-05";
         List<String> csvList = new ArrayList<>(ImmutableList.<String>builder().add(csvRow).build());
         List<Expense> expenseList = ExpenseCsvImporter.importFrom(csvList);
-        Expense expectedExpense = Expense.of(
+        Expense expectedExpense = Expense.Companion.of(
                 "Miscellaneous", "Credit card bill for the month", 200000,
                 LocalDateUtil.localDateOf(2020,6,5)
         );

@@ -20,7 +20,7 @@ public class FakeTransactionRepositoryTest {
         LocalDateTime startDate = LocalDateUtil.localDateOf(2020, 10, 12);
         for (long i = 0; i < 10; i++) {
             txnRepository.save(
-                    Transaction.of(
+                    Transaction.Companion.of(
                             "Source", TxnType.INCOME, 100, startDate.plusDays(i)
                     )
             );

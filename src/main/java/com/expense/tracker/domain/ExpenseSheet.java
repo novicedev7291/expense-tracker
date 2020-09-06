@@ -43,7 +43,7 @@ public class ExpenseSheet {
         if(type == TxnType.SAVING && hasBalanceToAddSaving(amount)) {
             throw new IllegalArgumentException("Not having enough balance to save this much for this month");
         }
-        Transaction savedTransaction = txnRepository.save(Transaction.of(source, type, amount, LocalDateTime.now(clock)));
+        Transaction savedTransaction = txnRepository.save(Transaction.Companion.of(source, type, amount, LocalDateTime.now(clock)));
         this.transactions = ImmutableSet.<Transaction>builder()
                 .addAll(transactions)
                 .add(savedTransaction)
@@ -55,7 +55,7 @@ public class ExpenseSheet {
             throw new IllegalArgumentException("Not having enough balance to save this much for this month");
         }
         if(canAddInSheetForThisMonth(addedOn)) {
-            Transaction savedTransaction = txnRepository.save(Transaction.of(source, type, amount, addedOn));
+            Transaction savedTransaction = txnRepository.save(Transaction.Companion.of(source, type, amount, addedOn));
             this.transactions = ImmutableSet.<Transaction>builder()
                     .addAll(transactions)
                     .add(savedTransaction)
@@ -82,7 +82,7 @@ public class ExpenseSheet {
 
     public Expense addExpense(String category, String description, int amount, LocalDateTime addedOn) {
         if(canAddInSheetForThisMonth(addedOn)) {
-            Expense savedExpense = expenseRepository.save(Expense.of(category, description, amount, addedOn));
+            Expense savedExpense = expenseRepository.save(Expense.Companion.of(category, description, amount, addedOn));
             this.expenses = ImmutableSet.<Expense>builder()
                     .addAll(expenses)
                     .add(savedExpense)

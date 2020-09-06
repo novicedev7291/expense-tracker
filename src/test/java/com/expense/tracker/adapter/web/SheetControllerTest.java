@@ -44,7 +44,7 @@ public class SheetControllerTest {
     @Test
     void shouldDeleteExpenseById() {
         Expense savedExpense = expenseRepository.save(
-                Expense.of("Miscellaneous", "Testing expense", 3728732,
+                new Expense(null, "Miscellaneous", "Testing expense", 3728732,
                         LocalDateUtil.localDateOf(2019, 6, 29))
         );
         final SheetController controller = new SheetController(service);
@@ -62,7 +62,7 @@ public class SheetControllerTest {
 
     @Test
     void shouldDeleteTransactionById() {
-        Transaction income = txnRepository.save(Transaction.of("Income", TxnType.INCOME, 328732,
+        Transaction income = txnRepository.save(Transaction.Companion.of("Income", TxnType.INCOME, 328732,
                 LocalDateUtil.localDateOf(2019, 7, 31)));
         final SheetController controller = new SheetController(service);
         ResponseEntity<TransactionDto> response = controller.deleteTxnById(income.getId());
